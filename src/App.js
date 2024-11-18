@@ -3,18 +3,19 @@ import axios from 'axios';
 import './App.css';
 import Header from './components/Header';
 import VideoThumbnail from './components/VideoThumbnail';
-
 import VideoPlayer from './components/VideoPlayer';
-// import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar'; // Import SearchBar
+import LandingPage from './components/LandingPage'; // Import the new LandingPage component
 
 const YOUTUBE_API_KEY = 'AIzaSyDjVnufagLCUNOBk_faBvU86UsCh7P6_2w';
 const YOUTUBE_PLAYLIST_ID = 'PLUy3kPVdQjN8PQB6lseAatwThsXfAvh7L';
+
 
 const App = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [searchTerm, setSearchTerm] = useState(''); // State to handle search term
+  const [showLandingPage, setShowLandingPage] = useState(true); // State to handle landing page visibility
 
   useEffect(() => {
     fetchVideos();
@@ -27,7 +28,7 @@ const App = () => {
         {
           params: {
             part: 'snippet',
-            maxResults: 140, // Set to 100 to fetch more videos
+            maxResults: 140,
             playlistId: YOUTUBE_PLAYLIST_ID,
             key: YOUTUBE_API_KEY
           }
@@ -56,15 +57,6 @@ const App = () => {
     }
   };
 
-  // Remove a video from the videos list
-  const removeVideo = (videoId) => {
-    setVideos(videos.filter((video) => video.id !== videoId));
-    // If the deleted video was selected, set the first remaining video as selected
-    if (selectedVideo?.id === videoId) {
-      setSelectedVideo(videos.length > 1 ? videos[0] : null);
-    }
-  };
-
   const handleSearch = () => {
     if (searchTerm) {
       const filteredVideos = videos.filter((video) =>
@@ -76,36 +68,53 @@ const App = () => {
     }
   };
 
+  // Start button handler to remove the landing page
+  const handleStartWatching = () => {
+    setShowLandingPage(false);
+  };
+
+  // Function to remove a video by its ID
+  const removeVideo = (videoId) => {
+    const updatedVideos = videos.filter(video => video.id !== videoId);
+    setVideos(updatedVideos); // Update the state with the new list of videos
+  };
+
   return (
     <div className="App">
-      {/* Header with SearchBar */}
-      <Header>
-        <SearchBar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          onSearch={handleSearch}
-        />
-      </Header>
+      {/* Conditionally render LandingPage or main content */}
+      {showLandingPage ? (
+        <LandingPage onStart={handleStartWatching} />
+      ) : (
+        <>
+          <Header>
+            <SearchBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              onSearch={handleSearch}
+            />
+          </Header>
 
-      <main>
-        {/* Video Player */}
-        {selectedVideo && (
-          <VideoPlayer url={selectedVideo.url} title={selectedVideo.title} />
-        )}
+          <main>
+            {/* Video Player */}
+            {selectedVideo && (
+              <VideoPlayer url={selectedVideo.url} title={selectedVideo.title} />
+            )}
 
-        {/* Video Gallery with 6 columns */}
-        <div className="video-gallery">
-          {videos.map((video) => (
-            <div key={video.id} className="video-thumbnail">
-              <VideoThumbnail
-                video={video}
-                onClick={() => setSelectedVideo(video)}
-              />
-              <button onClick={() => removeVideo(video.id)}>Delete</button>
+            {/* Video Gallery with 6 columns */}
+            <div className="video-gallery">
+              {videos.map((video) => (
+                <div key={video.id} className="video-thumbnail">
+                  <VideoThumbnail
+                    video={video}
+                    onClick={() => setSelectedVideo(video)}
+                  />
+                  <button onClick={() => removeVideo(video.id)}>Delete</button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </main>
+          </main>
+        </>
+      )}
     </div>
   );
 };

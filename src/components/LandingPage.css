@@ -1,57 +1,93 @@
 /* LandingPage.css */
-.landing-page {
+
+body {
+    font-family: 'Agency FB', Arial, sans-serif;
+    background-color: #caf50a;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f5f5f5;
-    color: #333;
+    margin: 0;
+    text-align: center;
+  }
+
+  
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire screen */
+    z-index: -1;
   }
   
+  .content {
+    margin-top: 25%;
+    position: relative;
+    z-index: 1;
+    background-color: rgba(126, 253, 7, 0.395); /* Semi-transparent background for readability */
+    padding: 2rem;
+    border-radius: 10px;
+  
+  }
+  
+  
   h1 {
+    color: #0d21f4;
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5em;
   }
   
   p {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
+    color: #1a1818;
+    font-size: 1.2rem;
+    margin-bottom: 1em;
   }
   
-  .age-form {
+  form {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
   
-  .age-input {
+  label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 1em;
+  }
+  
+  label input {
+    margin-left: 10px;
     padding: 10px;
     font-size: 1rem;
-    width: 200px;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
+    width: 100px;
+    border: 2px solid #ddd;
     border-radius: 5px;
     text-align: center;
   }
   
-  .submit-button {
-    padding: 10px 20px;
-    font-size: 1rem;
+  button[type="submit"] {
+    background-color: #f40691;
     color: #fff;
-    background-color: #007bff;
     border: none;
-    border-radius: 5px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 25px;
     cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1em;
   }
   
-  .submit-button:hover {
-    background-color: #0056b3;
+  button[type="submit"]:hover {
+    background-color: #4b09f2;
   }
   
-  .message {
-    margin-top: 1rem;
-    font-size: 1.25rem;
-    color: #555;
+  .error {
+    color: #ff6347;
+    font-size: 1rem;
+    margin-top: 1em;
   }
   
