@@ -5,33 +5,36 @@ import Header from './components/Header';
 import VideoThumbnail from './components/VideoThumbnail';
 import VideoPlayer from './components/VideoPlayer';
 import SearchBar from './components/SearchBar'; // Import SearchBar
-import LandingPage from './components/LandingPage'; // Import the new LandingPage component
+import LandingPage from './components/LandingPage'; // Import LandingPage component
 
 const YOUTUBE_API_KEY = 'AIzaSyDjVnufagLCUNOBk_faBvU86UsCh7P6_2w';
-const YOUTUBE_PLAYLIST_ID = 'PLUy3kPVdQjN8PQB6lseAatwThsXfAvh7L';
-
+const YOUTUBE_PLAYLIST_ID = 'PLEPQby6_o7m34KVQslk3BJV-nWgBhD-mk';
 
 const App = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(''); // State to handle search term
-  const [showLandingPage, setShowLandingPage] = useState(true); // State to handle landing page visibility
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [showLandingPage, setShowLandingPage] = useState(true); // Show landing page
+  const [isLoading, setIsLoading] = useState(false); // Loading state for videos
 
   useEffect(() => {
     fetchVideos();
   }, []);
 
-  const fetchVideos = async () => {
+  // Fetch videos with pagination
+  const fetchVideos = async (pageToken = '') => {
+    setIsLoading(true); // Start loading
     try {
       const response = await axios.get(
         `https://www.googleapis.com/youtube/v3/playlistItems`,
         {
           params: {
             part: 'snippet',
-            maxResults: 140,
+            maxResults: 50, // Max allowed by YouTube API
             playlistId: YOUTUBE_PLAYLIST_ID,
-            key: YOUTUBE_API_KEY
-          }
+            key: YOUTUBE_API_KEY,
+            pageToken: pageToken, // Pass token for pagination
+          },
         }
       );
 
@@ -50,10 +53,17 @@ const App = () => {
         };
       });
 
-      setVideos(fetchedVideos);
-      setSelectedVideo(fetchedVideos[0]); // Set the first video as selected
+      // Append new videos to the existing list
+      setVideos((prevVideos) => [...prevVideos, ...fetchedVideos]);
+
+      // Fetch next page if available
+      if (response.data.nextPageToken) {
+        fetchVideos(response.data.nextPageToken);
+      }
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      console.error('Error fetching videos:', error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -68,15 +78,15 @@ const App = () => {
     }
   };
 
-  // Start button handler to remove the landing page
+  // Start button handler to hide landing page
   const handleStartWatching = () => {
     setShowLandingPage(false);
   };
 
-  // Function to remove a video by its ID
+  // Function to remove a video by ID
   const removeVideo = (videoId) => {
-    const updatedVideos = videos.filter(video => video.id !== videoId);
-    setVideos(updatedVideos); // Update the state with the new list of videos
+    const updatedVideos = videos.filter((video) => video.id !== videoId);
+    setVideos(updatedVideos); // Update video list
   };
 
   return (
@@ -100,7 +110,10 @@ const App = () => {
               <VideoPlayer url={selectedVideo.url} title={selectedVideo.title} />
             )}
 
-            {/* Video Gallery with 6 columns */}
+            {/* Loading Spinner */}
+            {isLoading && <div className="spinner">Loading...</div>}
+
+            {/* Video Gallery */}
             <div className="video-gallery">
               {videos.map((video) => (
                 <div key={video.id} className="video-thumbnail">
@@ -108,7 +121,7 @@ const App = () => {
                     video={video}
                     onClick={() => setSelectedVideo(video)}
                   />
-                  <button onClick={() => removeVideo(video.id)}>Delete</button>
+                  {/* <button onClick={() => removeVideo(video.id)}>Delete</button> */}
                 </div>
               ))}
             </div>

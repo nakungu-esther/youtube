@@ -11,7 +11,8 @@
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
-    "proxy": "https://www.googleapis.com"
+    "proxy": "http://localhost:5000"
+
 
   },
   "scripts": {

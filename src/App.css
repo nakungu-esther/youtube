@@ -10,7 +10,7 @@
 
 header {
   width: 100%;
-  background-color: #333;
+  background-color: #181819e6;
   color: #fff;
   padding: 10px;
   display: flex;
@@ -127,7 +127,7 @@ main {
 }
 
 .video-player h2 {
-  font-size: 18px;
+  font-size: 25px;
   text-align: center;
   color: #333;
   margin-top: 10px;

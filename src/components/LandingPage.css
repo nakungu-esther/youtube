@@ -2,14 +2,11 @@
 
 body {
     font-family: 'Agency FB', Arial, sans-serif;
-    background-color: #caf50a;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    
     margin: 0;
-    text-align: center;
+    
   }
 
   
@@ -24,14 +21,17 @@ body {
   }
   
   .content {
-    margin-top: 25%;
+    margin: 18% auto; /* Centers the content horizontally */
     position: relative;
     z-index: 1;
-    background-color: rgba(126, 253, 7, 0.395); /* Semi-transparent background for readability */
+    background-color: rgba(44, 7, 253, 0.283); /* Semi-transparent background for readability */
     padding: 2rem;
     border-radius: 10px;
-  
+    width: 90%; /* Ensures the width is responsive on smaller screens */
+    max-width: 600px; /* Sets a reasonable maximum width */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
   }
+  
   
   
   h1 {
