@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './App.css';
 import Header from './components/Header';
@@ -17,55 +17,59 @@ const App = () => {
   const [showLandingPage, setShowLandingPage] = useState(true); // Show landing page
   const [isLoading, setIsLoading] = useState(false); // Loading state for videos
 
+  // Memoized function for fetching videos
+  const fetchVideos = useCallback(
+    async (pageToken = '') => {
+      setIsLoading(true); // Start loading
+      try {
+        const response = await axios.get(
+          'https://www.googleapis.com/youtube/v3/playlistItems',
+          {
+            params: {
+              part: 'snippet',
+              maxResults: 50, // Max allowed by YouTube API
+              playlistId: YOUTUBE_PLAYLIST_ID,
+              key: YOUTUBE_API_KEY,
+              pageToken: pageToken, // Pass token for pagination
+            },
+          }
+        );
+
+        const fetchedVideos = response.data.items.map((item) => {
+          const snippet = item.snippet;
+          const videoId = snippet?.resourceId?.videoId;
+          const title = snippet?.title;
+          const thumbnailUrl = snippet?.thumbnails?.high?.url;
+          const url = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+
+          return {
+            id: videoId,
+            title,
+            thumbnail: thumbnailUrl,
+            url,
+          };
+        });
+
+        // Append new videos to the existing list
+        setVideos((prevVideos) => [...prevVideos, ...fetchedVideos]);
+
+        // Fetch next page if available
+        if (response.data.nextPageToken) {
+          fetchVideos(response.data.nextPageToken);
+        }
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      } finally {
+        setIsLoading(false); // Stop loading
+      }
+    },
+    [] // Empty array because dependencies aren't changing
+  );
+
+  // Ensure useEffect only runs when fetchVideos changes
   useEffect(() => {
     fetchVideos();
-  }, []);
-
-  // Fetch videos with pagination
-  const fetchVideos = async (pageToken = '') => {
-    setIsLoading(true); // Start loading
-    try {
-      const response = await axios.get(
-        `https://www.googleapis.com/youtube/v3/playlistItems`,
-        {
-          params: {
-            part: 'snippet',
-            maxResults: 50, // Max allowed by YouTube API
-            playlistId: YOUTUBE_PLAYLIST_ID,
-            key: YOUTUBE_API_KEY,
-            pageToken: pageToken, // Pass token for pagination
-          },
-        }
-      );
-
-      const fetchedVideos = response.data.items.map((item) => {
-        const snippet = item.snippet;
-        const videoId = snippet?.resourceId?.videoId;
-        const title = snippet?.title;
-        const thumbnailUrl = snippet?.thumbnails?.high?.url;
-        const url = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-
-        return {
-          id: videoId,
-          title: title,
-          thumbnail: thumbnailUrl,
-          url: url,
-        };
-      });
-
-      // Append new videos to the existing list
-      setVideos((prevVideos) => [...prevVideos, ...fetchedVideos]);
-
-      // Fetch next page if available
-      if (response.data.nextPageToken) {
-        fetchVideos(response.data.nextPageToken);
-      }
-    } catch (error) {
-      console.error('Error fetching videos:', error);
-    } finally {
-      setIsLoading(false); // Stop loading
-    }
-  };
+  }, [fetchVideos]);
 
   const handleSearch = () => {
     if (searchTerm) {
@@ -81,12 +85,6 @@ const App = () => {
   // Start button handler to hide landing page
   const handleStartWatching = () => {
     setShowLandingPage(false);
-  };
-
-  // Function to remove a video by ID
-  const removeVideo = (videoId) => {
-    const updatedVideos = videos.filter((video) => video.id !== videoId);
-    setVideos(updatedVideos); // Update video list
   };
 
   return (
@@ -121,7 +119,7 @@ const App = () => {
                     video={video}
                     onClick={() => setSelectedVideo(video)}
                   />
-                  {/* <button onClick={() => removeVideo(video.id)}>Delete</button> */}
+                  {/* Add delete functionality only if needed */}
                 </div>
               ))}
             </div>
