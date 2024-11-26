@@ -1,13 +1,11 @@
-/* App.css */
-/* Make the App container fill the screen */
-/* App.css */
-
+/* General App Container */
 .App {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
+/* Header */
 header {
   width: 100%;
   background-color: #181819e6;
@@ -18,46 +16,70 @@ header {
   align-items: center;
 }
 
+/* Main Content */
 main {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
+/* Video Gallery */
 .video-gallery {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
   gap: 15px;
   margin-top: 20px;
 }
 
+/* Sidebar */
 .sidebar {
   width: 200px;
   padding: 15px;
   background: #f4f4f4;
 }
 
-
+/* Video Player */
 .video-player {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  width: 100%;
 }
 
+.video-player iframe {
+  width: 100%;
+  height: 450px; /* Adjust for preferred height */
+  border-radius: 8px;
+  border: none;
+}
+
+.video-player h2 {
+  font-size: 25px;
+  text-align: center;
+  color: #333;
+  margin-top: 10px;
+}
+
+/* Video Thumbnail */
 .video-thumbnail {
-  display: inline-block;
-  width: 200px;
   cursor: pointer;
-  margin: 10px;
+  transition: transform 0.3s ease;
 }
-.video-thumbnail :hover {
-  transform: scale(1.05); /* Slightly enlarges the thumbnail on hover */
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+
+.video-thumbnail:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
 }
+
 .video-thumbnail img {
   width: 100%;
   border-radius: 4px;
-}
-.video-thumbnail:hover img {
-  opacity: 0.9; /* Slightly dims the image on hover */
 }
 
 .video-thumbnail p {
@@ -65,7 +87,8 @@ main {
   text-align: center;
   margin: 5px 0;
 }
-/* App.css */
+
+/* Error Message */
 .error-message {
   background-color: #f44336;
   color: white;
@@ -75,23 +98,26 @@ main {
   border-radius: 5px;
 }
 
-/* Container for the search bar and button */
+/* Search Container */
 .search-container {
   display: flex;
   justify-content: center;
   margin: 20px 0;
+  flex-wrap: wrap; /* Ensures wrapping on smaller screens */
 }
 
-/* Styling for the search input */
+/* Search Bar */
 .search-bar {
   padding: 10px;
   font-size: 16px;
-  width: 250px; /* Adjust the width as needed */
+  flex: 1;
+  min-width: 200px; /* Minimum width for smaller screens */
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin: 5px;
 }
 
-/* Styling for the search button */
+/* Search Button */
 .search-button {
   padding: 10px 15px;
   margin-left: 10px;
@@ -106,29 +132,29 @@ main {
 .search-button:hover {
   background-color: #0056b3;
 }
-.video-player {
-  background-color: #f9f9f9; /* Light background for the player card */
-  padding: 20px;
-  border-radius: 8px; /* Rounds the corners */
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  margin-bottom: 20px; /* Spacing below the video player */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 100%;
-  width: 100%;
-}
 
-.video-player iframe {
-  width: 100%;
-  height: 450px; /* Adjust for preferred height */
-  border-radius: 8px; /* Matches the card’s rounded corners */
-  border: none;
-}
+/* Responsive Styles */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
 
-.video-player h2 {
-  font-size: 25px;
-  text-align: center;
-  color: #333;
-  margin-top: 10px;
+  .video-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Smaller thumbnails */
+  }
+
+  .search-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sidebar {
+    display: none; /* Hide the sidebar */
+  }
+
+  .video-player iframe {
+    height: 300px; /* Smaller height for mobile */
+  }
 }
